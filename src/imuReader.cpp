@@ -4,12 +4,17 @@
 #include <geometry_msgs/Vector3.h>
 #include <serial/serial.h>
 #include <jsoncpp/json/json.h>
+#include <tf2_ros/transform_broadcaster.h>
+#include <geometry_msgs/TransformStamped.h>
 
 
 int main(int argc, char **argv) {
   // Initialize the ROS node
   ros::init(argc, argv, "imu_reader");
   ros::NodeHandle nh("~");
+
+  tf2_ros::TransformBroadcaster br;
+  geometry_msgs::TransformStamped transformStamped;
 
   // Retrieve parameters for serial port, baud rate, and node rate
   std::string port;
@@ -81,7 +86,22 @@ int main(int argc, char **argv) {
             imu_msg.linear_acceleration.y = root["linear_acceleration"]["y"].asDouble();
             imu_msg.linear_acceleration.z = root["linear_acceleration"]["z"].asDouble();
 
+            imu_msg.header.stamp = ros::Time::now();
+            imu_msg.header.frame_id = "imu_link";
+
             imu_pub.publish(imu_msg);
+
+            transformStamped.header.stamp = imu_msg.header.stamp;
+            transformStamped.header.frame_id = "world";
+            transformStamped.child_frame_id = imu_msg.header.frame_id;
+
+            transformStamped.transform.translation.x = 0.0;
+            transformStamped.transform.translation.y = 0.0;
+            transformStamped.transform.translation.z = 0.0;
+
+            transformStamped.transform.rotation = imu_msg.orientation;
+
+            br.sendTransform(transformStamped);
       }
       else {
         ROS_ERROR("JSON object missing required fields");
