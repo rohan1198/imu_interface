@@ -34,3 +34,15 @@ cd ..
 
 catkin build
 ```
+
+### Running the Imu interface
+
+```
+source ./devel/setup.zsh
+
+# With Python
+roslaunch imu_interface imu_reader_py.launch
+
+# With C++
+roslaunch imu_interface imu_reader_cpp.launch
+```
