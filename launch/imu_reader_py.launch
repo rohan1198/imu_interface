@@ -1,0 +1,8 @@
+<launch>
+  <!-- Node for imu reader Python script -->
+  <node name="imu_reader_python" pkg="imu_interface" type="imu_reader.py" output="screen">
+    <param name="port" value="/dev/ttyUSB0" />
+    <param name="baudrate" value="115200" />
+    <param name="rate" value="100" />
+  </node>
+</launch>

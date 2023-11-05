@@ -1,0 +1,8 @@
+<launch>
+    <!-- Node for imuReader C++ executable -->
+    <node name="imu_reader" pkg="imu_interface" type="imuReader" output="screen">
+        <param name="port" value="/dev/ttyUSB0" />
+        <param name="baudrate" value="115200" />
+        <param name="rate" value="100" />
+    </node>
+</launch>
